@@ -119,11 +119,11 @@ typedef struct {
 //
 // Thread entrypoint.
 void* workerThreadStart(void* threadArgs) {
-    double startTime = CycleTimer::currentSeconds();
+    // double startTime = CycleTimer::currentSeconds();
     WorkerArgs* args = static_cast<WorkerArgs*>(threadArgs);
     mandelbrotSerial(args->x0, args->y0, args->x1, args->y1, args->width, args->height, args->startRow, args->endRow, args->maxIterations, args->output);
-    double endTime = CycleTimer::currentSeconds();
-    printf("[mandelbrot thread %d]:\t\t[%.3f] ms, row %d-%d %d\n", args->threadId, (endTime - startTime) * 1000, args->startRow, args->endRow, args->endRow - args->startRow);
+    // double endTime = CycleTimer::currentSeconds();
+    // printf("[mandelbrot thread %d]:\t\t[%.3f] ms, row %d-%d %d\n", args->threadId, (endTime - startTime) * 1000, args->startRow, args->endRow, args->endRow - args->startRow);
     return NULL;
 }
 
