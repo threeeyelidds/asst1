@@ -147,7 +147,6 @@ void mandelbrotThread(
     pthread_t workers[MAX_THREADS];
     WorkerArgs args[MAX_THREADS];
 
-    int residual = height % numThreads;
     int length = height / numThreads;
     int start = 0;
     int end = 0;
@@ -160,8 +159,8 @@ void mandelbrotThread(
             length += length / 2;
         }
         end = start + length;
-        if (i < residual) {
-            end++;
+        if (i == numThreads - 1) {
+            end = height;
         }
         args[i].x0 = x0;
         args[i].y0 = y0;
