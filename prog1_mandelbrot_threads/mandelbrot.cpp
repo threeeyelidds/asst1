@@ -154,7 +154,7 @@ void mandelbrotThread(
     int start = 0;
     int end = 0;
     for (int i = 0; i < numThreads; i++) {
-        end = start + length;
+        end = start + length-1;
         if (i < residual) {
             end++;
         }
@@ -170,7 +170,7 @@ void mandelbrotThread(
         args[i].threadId = i;
         args[i].numThreads = numThreads;
         args[i].startRow = start;
-        args[i].endRow = end-1;
+        args[i].endRow = end;
         start = end + 1;
 }
 
