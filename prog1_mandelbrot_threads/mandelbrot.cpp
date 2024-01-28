@@ -120,7 +120,6 @@ typedef struct {
 // Thread entrypoint.
 void* workerThreadStart(void* threadArgs) {
     WorkerArgs* args = static_cast<WorkerArgs*>(threadArgs);
-
     mandelbrotSerial(args->x0, args->y0, args->x1, args->y1, args->width, args->height, args->startRow, args->endRow, args->maxIterations, args->output);
     return NULL;
 }
@@ -152,7 +151,14 @@ void mandelbrotThread(
     int length = height / numThreads;
     int start = 0;
     int end = 0;
+    int heavy_start = numThreads / 4;
+    int heavy_end = numThreads / 4 * 3;
     for (int i = 0; i < numThreads; i++) {
+        if (i == heavy_start) {
+            length -= length / 2;
+        } else if (i == heavy_end) {
+            length += length / 2;
+        }
         end = start + length;
         if (i < residual) {
             end++;
