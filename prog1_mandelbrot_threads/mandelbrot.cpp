@@ -159,9 +159,9 @@ void mandelbrotThread(
     for (int i = 0; i < numThreads; i++) {
         int cur_length = length;
         if ((i >= heavy_start && i < heavy_end) || i<range0) {
-            cur_length -= length / 4;
+            cur_length -= length / 3;
         } else {
-            cur_length += length / 4;
+            cur_length += length / 3;
         }
         end = start + cur_length;
         if (i == numThreads - 1) {
