@@ -170,7 +170,7 @@ void mandelbrotThread(
         args[i].threadId = i;
         args[i].numThreads = numThreads;
         args[i].startRow = start;
-        args[i].endRow = end;
+        args[i].endRow = end-1;
         start = end + 1;
 }
 
