@@ -153,11 +153,12 @@ void mandelbrotThread(
     int length = height / numThreads;
     int start = 0;
     int end = 0;
-    int heavy_start = numThreads / 4;
-    int heavy_end = numThreads / 4 * 3;
+    int range0 =  numThreads / 8;
+    int heavy_start = numThreads / 8 * 3;
+    int heavy_end = numThreads / 8 * 6;
     for (int i = 0; i < numThreads; i++) {
         int cur_length = length;
-        if (i >= heavy_start && i < heavy_end) {
+        if (i >= heavy_start && i < heavy_end || i<range0) {
             cur_length -= length / 4;
         } else {
             cur_length += length / 4;
