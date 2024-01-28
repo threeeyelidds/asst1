@@ -162,6 +162,7 @@ void mandelbrotThread(
         if (i == numThreads - 1) {
             end = height;
         }
+        printf("start %d, length %d\n", start, length);
         args[i].x0 = x0;
         args[i].y0 = y0;
         args[i].x1 = x1;
