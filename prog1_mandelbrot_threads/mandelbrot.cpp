@@ -150,7 +150,6 @@ void mandelbrotThread(
 
     int residual = height % numThreads;
     int length = height / numThreads;
-    printf("length: %d\n, residual: %d\n", length, residual);
     int start = 0;
     int end = 0;
     for (int i = 0; i < numThreads; i++) {
@@ -158,7 +157,6 @@ void mandelbrotThread(
         if (i < residual) {
             end++;
         }
-        printf("start: %d\n, end: %d\n", start, end);
         args[i].x0 = x0;
         args[i].y0 = y0;
         args[i].x1 = x1;
