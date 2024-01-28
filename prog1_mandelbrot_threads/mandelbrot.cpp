@@ -123,7 +123,7 @@ void* workerThreadStart(void* threadArgs) {
     WorkerArgs* args = static_cast<WorkerArgs*>(threadArgs);
     mandelbrotSerial(args->x0, args->y0, args->x1, args->y1, args->width, args->height, args->startRow, args->endRow, args->maxIterations, args->output);
     double endTime = CycleTimer::currentSeconds();
-    printf("[mandelbrot thread %d]:\t\t[%.3f] ms, row %d-%d\n", args->threadId, (endTime - startTime) * 1000, args->startRow, args->endRow);
+    printf("[mandelbrot thread %d]:\t\t[%.3f] ms, row %d-%d %d\n", args->threadId, (endTime - startTime) * 1000, args->startRow, args->endRow, args->endRow - args->startRow);
     return NULL;
 }
 
@@ -156,16 +156,16 @@ void mandelbrotThread(
     int heavy_start = numThreads / 4;
     int heavy_end = numThreads / 4 * 3;
     for (int i = 0; i < numThreads; i++) {
+        int cur_length = length;
         if (i >= heavy_start && i < heavy_end) {
-            length -= length / 4;
+            cur_length -= length / 4;
         } else {
-            length += length / 4;
+            cur_length += length / 4;
         }
-        end = start + length;
+        end = start + cur_length;
         if (i == numThreads - 1) {
             end = height;
         }
-        printf("start %d, length %d\n", start, length);
         args[i].x0 = x0;
         args[i].y0 = y0;
         args[i].x1 = x1;
