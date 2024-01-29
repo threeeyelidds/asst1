@@ -166,7 +166,7 @@ float arraySumVector(float* values, int N) {
     }
 
     float totalSum = 0;
-    _cmu418_vstore_float(&sumArray, sumVec, maskAll);
+    _cmu418_vstore_float(sumArray, sumVec, maskAll);
 
     return sumArray[0];
 }
