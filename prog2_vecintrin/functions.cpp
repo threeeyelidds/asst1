@@ -90,7 +90,11 @@ void clampedExpVector(float* values, int* exponents, float* output, int N) {
     zeroInt = _cmu418_vset_int(0);
 
     for (int i = 0; i < N; i += VECTOR_WIDTH) {
-        maskAll = _cmu418_init_ones();
+        if (i + VECTOR_WIDTH > N) {
+            maskAll = _cmu418_init_ones(N - i);
+        } else {
+            maskAll = _cmu418_init_ones();
+        }
 
         _cmu418_vload_float(x, values + i, maskAll);
         _cmu418_vload_int(y, exponents + i, maskAll);
