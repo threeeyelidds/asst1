@@ -158,7 +158,7 @@ float arraySumVector(float* values, int N) {
     }
 
     int numActiveLanes = VECTOR_WIDTH;
-    while (numActiveLanes > 0) {
+    while (numActiveLanes > 1) {
         _cmu418_hadd_float(sumVec, sumVec);
         _cmu418_interleave_float(sumVec, sumVec);
         numActiveLanes /= 2;
