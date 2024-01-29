@@ -142,7 +142,6 @@ float arraySumSerial(float* values, int N) {
 float arraySumVector(float* values, int N) {
     __cmu418_vec_float x, sumVec;
     __cmu418_mask maskAll;
-    float sumArray[VECTOR_WIDTH];
 
     // Initialize the vector sum to zero
     sumVec = _cmu418_vset_float(0.f);
@@ -159,14 +158,14 @@ float arraySumVector(float* values, int N) {
     }
 
     int numActiveLanes = VECTOR_WIDTH;
-    while (_cmu418_cntbits(maskAll) > 0) {
+    while (numActiveLanes > 0) {
         _cmu418_hadd_float(sumVec, sumVec);
         _cmu418_interleave_float(sumVec, sumVec);
         numActiveLanes /= 2;
     }
 
     float totalSum = 0;
-    _cmu418_vstore_float(sumArray, sumVec, maskAll);
+    _cmu418_vstore_float(&totalSum, sumVec, maskAll);
 
-    return sumArray[0];
+    return totalSum;
 }
