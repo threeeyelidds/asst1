@@ -115,7 +115,7 @@ void clampedExpVector(float* values, int* exponents, float* output, int N) {
         }
 
         maskClamp = _cmu418_init_ones();
-        _cmu418_vgt_float(maskClamp, result, clampVal, maskOne);
+        _cmu418_vgt_float(maskClamp, result, clampVal, maskAll);
         _cmu418_vmove_float(result, clampVal, maskClamp);
         _cmu418_vstore_float(output + i, result, maskAll);
     }
