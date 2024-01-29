@@ -81,9 +81,47 @@ void clampedExpSerial(float* values, int* exponents, float* output, int N) {
 }
 
 void clampedExpVector(float* values, int* exponents, float* output, int N) {
-    // Implement your vectorized version of clampedExpSerial here
-    //  ...
+    __cmu418_vec_float x, xpower, result, clampVal;
+    __cmu418_vec_int y, oneInt, zeroInt, maskOneInt;
+    __cmu418_mask maskAll, maskBits, maskOne, maskClamp;
+
+    clampVal = _cmu418_vset_float(4.18f);
+    oneInt = _cmu418_vset_int(1);
+    zeroInt = _cmu418_vset_int(0);
+
+    for (int i = 0; i < N; i += VECTOR_WIDTH) {
+        maskAll = _cmu418_init_ones();
+
+        _cmu418_vload_float(x, values + i, maskAll);
+        _cmu418_vload_int(y, exponents + i, maskAll);
+        
+        result = _cmu418_vset_float(1.0f);
+        xpower = x;
+        // get the mask for y>0
+        maskBits = _cmu418_init_ones(0);
+        _cmu418_vgt_int(maskBits, y, zeroInt, maskAll);
+        while (_cmu418_cntbits(maskBits) > 0) {
+            // get the mask for y==1
+            maskOne = _cmu418_init_ones(0);
+            _cmu418_vbitand_int(maskOneInt, y, oneInt, maskBits);
+            _cmu418_vgt_int(maskOne, maskOneInt, zeroInt, maskBits);
+            // if y==1, compute result *= xpower;
+            _cmu418_vmult_float(result, result, xpower, maskOne);
+            // xpower = xpower * xpower;
+            _cmu418_vmult_float(xpower, xpower, xpower, maskBits);
+            // y >>= 1;
+            _cmu418_vshiftright_int(y, y, oneInt, maskBits);
+            _cmu418_vgt_int(maskBits, y, zeroInt, maskAll);
+        }
+
+        maskClamp = _cmu418_init_ones();
+        _cmu418_vgt_float(maskClamp, result, clampVal, maskOne);
+        _cmu418_vmove_float(result, clampVal, maskClamp);
+        _cmu418_vstore_float(output + i, result, maskAll);
+    }
 }
+
+
 
 
 float arraySumSerial(float* values, int N) {
@@ -98,7 +136,32 @@ float arraySumSerial(float* values, int N) {
 // Assume N % VECTOR_WIDTH == 0
 // Assume VECTOR_WIDTH is a power of 2
 float arraySumVector(float* values, int N) {
-    // Implement your vectorized version here
-    //  ...
-	return 0.f;
+    __cmu418_vec_float x, sumVec;
+    __cmu418_mask maskAll;
+    float sumArray[VECTOR_WIDTH];
+
+    // Initialize the vector sum to zero
+    sumVec = _cmu418_vset_float(0.f);
+
+    // Process in chunks of VECTOR_WIDTH
+    for (int i = 0; i < N; i += VECTOR_WIDTH) {
+        maskAll = _cmu418_init_ones();
+
+        // Load VECTOR_WIDTH elements into the vector register
+        _cmu418_vload_float(x, values + i, maskAll);
+
+        // Add the vector elements to the running sum
+        _cmu418_vadd_float(sumVec, sumVec, x, maskAll);
+    }
+
+    // Store the vector sums into an array
+    _cmu418_vstore_float(sumArray, sumVec, maskAll);
+
+    // Sum up the elements of the sum array
+    float totalSum = 0.f;
+    for (int i = 0; i < VECTOR_WIDTH; i++) {
+        totalSum += sumArray[i];
+    }
+
+    return totalSum;
 }
