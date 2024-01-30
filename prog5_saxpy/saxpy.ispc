@@ -15,7 +15,7 @@ task void saxpy_ispc_task(uniform int N,
                                uniform float scale,
                                uniform float X[], 
                                uniform float Y[],
-                               uniform float result[])
+                               uniform float* result_start)
 {
 
     uniform int indexStart = taskIndex * span;
