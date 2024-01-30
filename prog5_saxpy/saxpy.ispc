@@ -13,8 +13,8 @@ export void saxpy_ispc(uniform int N,
 task void saxpy_ispc_task(uniform int N,
                                uniform int span,
                                uniform float scale,
-                               uniform float X[], 
-                               uniform float Y[],
+                               uniform float* X, 
+                               uniform float* Y,
                                uniform float* result_start)
 {
 
@@ -37,6 +37,8 @@ export void saxpy_ispc_withtasks(uniform int N,
 
     foreach (taskIndex = 0 ... 64) {
         uniform float *result_start = &result[taskIndex * span];
-        launch[1] saxpy_ispc_task(N, span, scale, X, Y, result_start);
+        uniform float *X_start = &X[taskIndex * span];
+        uniform float *Y_start = &Y[taskIndex * span];
+        launch[1] saxpy_ispc_task(N, span, scale, X_start, Y_start, result_start);
     }
 }
