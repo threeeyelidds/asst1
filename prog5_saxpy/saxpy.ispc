@@ -21,14 +21,9 @@ task void saxpy_ispc_task(uniform int N,
     uniform int indexStart = taskIndex * span;
     uniform int indexEnd = min(N, indexStart + span);
 
-    uniform int tileSize = 1024; // Example tile size, adjust based on cache size
-
-    for (uniform int tileStart = indexStart; tileStart < indexEnd; tileStart += tileSize) {
-        uniform int tileEnd = min(tileStart + tileSize, indexEnd);
-        foreach (i = tileStart ... tileEnd) {
-            result[i] = scale * X[i] + Y[i];
-        }
-}
+    foreach (i = indexStart ... indexEnd) {
+        result[i] = scale * X[i] + Y[i];
+    }
 }
 
 export void saxpy_ispc_withtasks(uniform int N,
@@ -40,5 +35,8 @@ export void saxpy_ispc_withtasks(uniform int N,
 
     uniform int span = N / 64;  // 64 tasks
 
-    launch[N/span] saxpy_ispc_task(N, span, scale, X, Y, result);
+    foreach (taskIndex = 0 ... 64) {
+        uniform float *result_start = &result[taskIndex * span];
+        launch[1] saxpy_ispc_task(N, span, scale, X, Y, result_start, taskIndex);
+    }
 }
