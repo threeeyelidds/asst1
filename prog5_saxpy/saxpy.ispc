@@ -17,11 +17,7 @@ task void saxpy_ispc_task(uniform int N,
                                uniform float* Y,
                                uniform float* result_start)
 {
-
-    uniform int indexStart = taskIndex * span;
-    uniform int indexEnd = min(N, indexStart + span);
-
-    foreach (i = indexStart ... indexEnd) {
+    foreach (i = 0 ... span) {
         result_start[i] = scale * X[i] + Y[i];
     }
 }
