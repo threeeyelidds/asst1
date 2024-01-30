@@ -67,18 +67,19 @@ export void mandelbrot_ispc_withtasks(uniform float x0, uniform float y0,
                                       uniform int maxIterations,
                                       uniform int output[])
 {
-    uniform int threadCount = 16;
+    uniform int threadCount = 2; // Adjust this based on your requirements
     uniform int baseRowsPerTask = height / threadCount;
     uniform int extraRows = height % threadCount;
 
-    for (uniform int task = 0; task < threadCount; ++task) {
+    for (uniform int taskIndex = 0; taskIndex < threadCount; ++taskIndex) {
         uniform int rowsForThisTask = baseRowsPerTask;
 
-        if (task < extraRows) {
+        // Distribute the extra rows among the first few tasks
+        if (taskIndex < extraRows) {
             rowsForThisTask += 1;
         }
 
-        uniform int startRow = task * baseRowsPerTask + min(task, extraRows);
+        uniform int startRow = taskIndex * baseRowsPerTask + min(taskIndex, extraRows);
 
         // Create a task for each portion of the image
         launch[1] mandelbrot_ispc_task(x0, y0, x1, y1,
@@ -88,4 +89,3 @@ export void mandelbrot_ispc_withtasks(uniform float x0, uniform float y0,
                                        output);
     }
 }
-
