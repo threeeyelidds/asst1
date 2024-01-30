@@ -64,6 +64,7 @@ task void mandelbrot_ispc_task(uniform float x0, uniform float y0,
 export void mandelbrot_ispc_withtasks(uniform float x0, uniform float y0,
                                       uniform float x1, uniform float y1,
                                       uniform int width, uniform int height,
+                                      uniform int startRow,
                                       uniform int maxIterations,
                                       uniform int output[])
 {
