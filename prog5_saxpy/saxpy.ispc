@@ -5,11 +5,8 @@ export void saxpy_ispc(uniform int N,
                             uniform float Y[],
                             uniform float result[])
 {
-    uniform int tileSize = 1024;
-    foreach (block = indexStart ... indexEnd : tileSize) {
-        foreach (i = block ... min(block + tileSize, indexEnd)) {
-            result[i] = scale * X[i] + Y[i];
-        }
+    foreach (i = 0 ... N) {           
+        result[i] = scale * X[i] + Y[i];
     }
 }
 
@@ -24,9 +21,13 @@ task void saxpy_ispc_task(uniform int N,
     uniform int indexStart = taskIndex * span;
     uniform int indexEnd = min(N, indexStart + span);
 
-    foreach (i = indexStart ... indexEnd) {
-        result[i] = scale * X[i] + Y[i];
-    }
+    uniform int tileSize = 1024; // Example tile size, adjust based on cache size
+
+    foreach (block = indexStart ... indexEnd : tileSize) {
+        foreach (i = block ... min(block + tileSize, indexEnd)) {
+            result[i] = scale * X[i] + Y[i];
+        }
+}
 }
 
 export void saxpy_ispc_withtasks(uniform int N,
