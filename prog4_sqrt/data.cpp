@@ -24,6 +24,8 @@ void initBad(float *values, int N) {
         // Todo: Choose values
         if (i<N/64) {
             values[i]=2.999f;
+        } else if (i>=N-N/64) {
+            values[i]=0.001f;
         } else {
             values[i] = 1.0f;
         }
