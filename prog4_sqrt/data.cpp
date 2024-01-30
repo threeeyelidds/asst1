@@ -13,7 +13,7 @@ void initRandom(float *values, int N) {
 void initGood(float *values, int N) {
     for (int i = 0; i < N; ++i) {
         // Generate numbers primarily close to 0 and 3
-        values[i] = .001f + 2.998f * static_cast<float>(rand()) / RAND_MAX;
+        values[i] = 2.999f;
     }
 }
 
