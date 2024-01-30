@@ -23,7 +23,7 @@ task void saxpy_ispc_task(uniform int N,
 
     uniform int tileSize = 1024; // Example tile size, adjust based on cache size
 
-    foreach (block = indexStart ... indexEnd : tileSize) {
+    for (uniform int tileStart = indexStart; tileStart < indexEnd; tileStart += tileSize) {
         foreach (i = block ... min(block + tileSize, indexEnd)) {
             result[i] = scale * X[i] + Y[i];
         }
