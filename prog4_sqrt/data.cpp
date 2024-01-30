@@ -14,7 +14,11 @@ void initGood(float *values, int N) {
     for (int i=0; i<N; i++)
     {
         // Todo: Choose values
-        values[i] = 1.0f;
+        if (i % 2 == 0) {
+            values[i] = 1.0f;
+        } else {
+            values[i] = 3.0f;
+        }
     }
 }
 
