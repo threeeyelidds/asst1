@@ -67,14 +67,25 @@ export void mandelbrot_ispc_withtasks(uniform float x0, uniform float y0,
                                       uniform int maxIterations,
                                       uniform int output[])
 {
+    uniform int threadCount = 16;
+    uniform int baseRowsPerTask = height / threadCount;
+    uniform int extraRows = height % threadCount;
 
-    uniform int threadCount = 2;
-    uniform int rowsPerTask = height / threadCount;
+    for (uniform int task = 0; task < threadCount; ++task) {
+        uniform int rowsForThisTask = baseRowsPerTask;
 
-    // create threadCount tasks
-    launch[threadCount] mandelbrot_ispc_task(x0, y0, x1, y1,
-                                     width, height,
-                                     rowsPerTask,
-                                     maxIterations,
-                                     output); 
+        if (task < extraRows) {
+            rowsForThisTask += 1;
+        }
+
+        uniform int startRow = task * baseRowsPerTask + min(task, extraRows);
+
+        // Create a task for each portion of the image
+        launch[1] mandelbrot_ispc_task(x0, y0, x1, y1,
+                                       width, height,
+                                       startRow, rowsForThisTask,
+                                       maxIterations,
+                                       output);
+    }
 }
+
